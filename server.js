@@ -15,9 +15,12 @@ import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 import { QdrantClient } from "@qdrant/js-client-rest";
 
+import os from "os";
+
 // Initialize a custom Qdrant client with Connection: close to prevent keep-alive socket errors
 const qdrantClient = new QdrantClient({
   url: process.env.QDRANT_URL || "http://127.0.0.1:6333",
+  apiKey: process.env.QDRANT_API_KEY,
   fetch: (input, init) => {
     return fetch(input, {
       ...init,
@@ -38,7 +41,8 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Configure multer for file uploads
-const upload = multer({ dest: "uploads/" });
+const uploadDir = process.env.NETLIFY ? os.tmpdir() : "uploads/";
+const upload = multer({ dest: uploadDir });
 
 // Store document metadata
 const documentStore = new Map();
@@ -274,9 +278,13 @@ app.delete("/api/documents/:documentId", async (req, res) => {
   }
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`\n🚀 NotebookLM RAG Server running on http://localhost:${PORT}`);
-  console.log(`📊 Make sure Qdrant is running on ${process.env.QDRANT_URL || "http://127.0.0.1:6333"}`);
-  console.log(`\n📄 Upload a document and start chatting!\n`);
-});
+// Start server locally if not in Netlify
+if (!process.env.NETLIFY) {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 NotebookLM RAG Server running on http://localhost:${PORT}`);
+    console.log(`📊 Make sure Qdrant is running on ${process.env.QDRANT_URL || "http://127.0.0.1:6333"}`);
+    console.log(`\n📄 Upload a document and start chatting!\n`);
+  });
+}
+
+export default app;
