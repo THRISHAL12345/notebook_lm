@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotebookLM RAG - Chat with Your Documents</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 NotebookLM RAG</h1>
+            <p class="subtitle">Upload a document and have a conversation with it</p>
+        </header>
+
+        <div class="main-content" id="mainContent">
+            <!-- Upload Section -->
+            <div class="upload-section" id="uploadSection">
+                <div class="upload-card">
+                    <div class="upload-icon">📄</div>
+                    <h2>Upload Your Document</h2>
+                    <p>Upload a PDF, TXT, or CSV file to start asking questions</p>
+                    <form id="uploadForm">
+                        <input type="file" id="fileInput" accept=".pdf,.txt,.csv" required hidden>
+                        <button type="button" class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                            Choose File
+                        </button>
+                        <div id="fileName" class="file-name"></div>
+                        <button type="submit" class="btn btn-success" id="uploadBtn" style="display: none;">
+                            Upload & Index
+                        </button>
+                    </form>
+                    <div id="uploadStatus" class="status-message"></div>
+                </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="chat-section" id="chatSection" style="display: none;">
+                <div class="document-info" id="documentInfo">
+                    <div class="doc-name" id="docName"></div>
+                    <button class="btn btn-secondary btn-sm" onclick="resetApp()">Upload New Document</button>
+                </div>
+
+                <div class="chat-container">
+                    <div class="messages" id="messages">
+                        <div class="message bot-message">
+                            <div class="message-content">
+                                👋 Hello! I'm ready to answer questions about your document. What would you like to know?
+                            </div>
+                        </div>
+                    </div>
+
+                    <form class="chat-input-form" id="chatForm">
+                        <input 
+                            type="text" 
+                            id="questionInput" 
+                            placeholder="Ask a question about your document..."
+                            autocomplete="off"
+                            required
+                        >
+                        <button type="submit" class="btn btn-primary" id="sendBtn">
+                            Send
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+                <div class="spinner"></div>
+                <p id="loadingText">Processing...</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>Built with ❤️ using RAG (Retrieval-Augmented Generation)</p>
+            <p class="tech-stack">LangChain • OpenAI • Groq • Qdrant • Express.js</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
