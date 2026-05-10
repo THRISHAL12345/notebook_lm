@@ -7,20 +7,20 @@ A full-stack RAG (Retrieval-Augmented Generation) application inspired by Google
 - **Multi-Format Support**: Upload PDF, TXT, or CSV files through a beautiful web interface
 - **Intelligent Chunking**: Uses Recursive Character Text Splitter for optimal document segmentation
 - **Vector Storage**: Leverages Qdrant vector database for efficient similarity search
-- **Semantic Search**: Powered by OpenAI's text-embedding-3-large model
-- **Fast LLM Inference**: Groq API with Llama 3.1 70B for blazing-fast answer generation
+- **Semantic Search**: Powered by local HuggingFace embeddings (`Xenova/all-MiniLM-L6-v2`), requiring no external paid API for embeddings
+- **Fast LLM Inference**: Groq API with Llama 3.3 70B Versatile for blazing-fast answer generation
 - **Context-Aware Answers**: Generates answers strictly from document content
 - **Source Citations**: Every answer includes source references and content snippets
 - **Real-time Chat**: Interactive chat interface with instant responses
-- **Multiple Document Support**: Handle different documents with isolated vector collections
+- **Robust Networking**: Custom connection handling to perfectly manage keep-alive states with the vector database
 
 ## 🛠️ Tech Stack
 
 ### Backend
 - **Node.js & Express**: RESTful API server
 - **LangChain**: Document processing and RAG pipeline orchestration
-- **OpenAI API**: Embeddings (text-embedding-3-large)
-- **Groq API**: Fast LLM inference with Llama 3.1 70B Versatile
+- **HuggingFace Transformers**: Free, high-quality local embeddings (`Xenova/all-MiniLM-L6-v2`)
+- **Groq API**: Fast LLM inference with Llama 3.3 70B Versatile
 - **Qdrant**: Vector database for embeddings storage and retrieval
 - **Multer**: File upload handling
 - **Multiple Loaders**: PDFLoader, TextLoader, CSVLoader for different file types
@@ -49,8 +49,9 @@ A full-stack RAG (Retrieval-Augmented Generation) application inspired by Google
 
 3. EMBEDDING
    ↓
-   OpenAI text-embedding-3-large
-   • Converts chunks to 3072-dimensional vectors
+   HuggingFace Xenova/all-MiniLM-L6-v2
+   • Generates free local embeddings
+   • Converts chunks to 384-dimensional vectors
 
 4. STORAGE
    ↓
@@ -65,9 +66,9 @@ A full-stack RAG (Retrieval-Augmented Generation) application inspired by Google
 
 6. GENERATION
    ↓
-   Groq API with Llama 3.1 70B Versatile
+   Groq API with Llama 3.3 70B Versatile
    • Blazing-fast inference (up to 100+ tokens/sec)
-   • Strict system prompt: answer only from context
+   • Strict system prompt: answers naturally without explicitly referencing internal chunks
    • Temperature: 0.3 (factual responses)
 ```
 
@@ -77,7 +78,6 @@ A full-stack RAG (Retrieval-Augmented Generation) application inspired by Google
 
 - Node.js (v18 or higher)
 - Docker & Docker Compose (for Qdrant)
-- OpenAI API Key (for embeddings)
 - Groq API Key (for LLM inference) - Get it free at [console.groq.com](https://console.groq.com)
 
 ### Installation
@@ -100,10 +100,9 @@ A full-stack RAG (Retrieval-Augmented Generation) application inspired by Google
    
    Edit `.env` and add your API keys:
    ```env
-   OPENAI_API_KEY=your_openai_api_key_here
    GROQ_API_KEY=your_groq_api_key_here
-   GROQ_MODEL=llama-3.1-70b-versatile
-   QDRANT_URL=http://localhost:6333
+   GROQ_MODEL=llama-3.3-70b-versatile
+   QDRANT_URL=http://127.0.0.1:6333
    PORT=3000
    ```
 
@@ -255,10 +254,9 @@ NotebookLM-RAG/
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `OPENAI_API_KEY` | Your OpenAI API key (for embeddings) | Required |
 | `GROQ_API_KEY` | Your Groq API key (for LLM) | Required |
-| `GROQ_MODEL` | Groq model to use | `llama-3.1-70b-versatile` |
-| `QDRANT_URL` | Qdrant server URL | `http://localhost:6333` |
+| `GROQ_MODEL` | Groq model to use | `llama-3.3-70b-versatile` |
+| `QDRANT_URL` | Qdrant server URL | `http://127.0.0.1:6333` |
 | `PORT` | Server port | `3000` |
 
 ## 🚢 Deployment
@@ -295,16 +293,6 @@ NotebookLM-RAG/
 - Document isolation via unique collections
 - No permanent file storage
 
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 ## 📄 License
 
 This project is licensed under the ISC License.
@@ -313,14 +301,8 @@ This project is licensed under the ISC License.
 
 - Inspired by [Google NotebookLM](https://notebooklm.google.com/)
 - Built with [LangChain](https://www.langchain.com/)
-- Powered by [OpenAI](https://openai.com/)
+- Powered by [Groq](https://groq.com/) and [HuggingFace](https://huggingface.co/)
 - Vector storage by [Qdrant](https://qdrant.tech/)
-
-## 📬 Support
-
-For issues, questions, or suggestions:
-- Open an issue on GitHub
-- Contact: [Your Email]
 
 ---
 
